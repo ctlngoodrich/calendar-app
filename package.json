@@ -9,13 +9,26 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@azure/identity": "^4.13.0",
+    "@libsql/client": "^0.17.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "@prisma/adapter-libsql": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "googleapis": "^171.4.0",
+    "ical-generator": "^10.0.0",
     "next": "16.1.6",
+    "node-ical": "^0.25.4",
+    "nodemailer": "^8.0.1",
+    "prisma": "^7.4.2",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
