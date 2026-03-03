@@ -24,6 +24,15 @@ export async function getCohBusyTimes(start: Date, end: Date): Promise<Interval[
       const evStart = new Date(vevent.start)
       const evEnd = new Date(vevent.end)
 
+      // Skip "Following:" events (other people's calendars)
+      if (vevent.summary && String(vevent.summary).startsWith('Following:')) continue
+
+      // Skip all-day events spanning multiple days (e.g. PTO blocks)
+      const durationMs = evEnd.getTime() - evStart.getTime()
+      const isDayOrLonger = durationMs >= 24 * 60 * 60 * 1000
+      const isAllDay = !vevent.start.toString().includes('T')
+      if (isDayOrLonger && isAllDay) continue
+
       // Include event if it overlaps with our range
       if (evStart < end && evEnd > start) {
         busy.push({ start: evStart, end: evEnd })
