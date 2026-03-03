@@ -4,8 +4,15 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient()
+function getPrismaClient() {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient()
+  }
+  return globalForPrisma.prisma
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+export const prisma = {
+  get booking() { return getPrismaClient().booking },
+  get $connect() { return getPrismaClient().$connect.bind(getPrismaClient()) },
+  get $disconnect() { return getPrismaClient().$disconnect.bind(getPrismaClient()) },
+}
