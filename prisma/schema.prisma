@@ -1,10 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  // output removed - use default
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Booking {
