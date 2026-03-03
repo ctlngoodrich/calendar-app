@@ -24,14 +24,17 @@ export async function getCohBusyTimes(start: Date, end: Date): Promise<Interval[
       const evStart = new Date(vevent.start)
       const evEnd = new Date(vevent.end)
 
-      // Skip "Following:" events (other people's calendars)
-      if (vevent.summary && String(vevent.summary).startsWith('Following:')) continue
+      // Skip "Following:" events (other people's calendars you're tracking)
+      const summary = vevent.summary ? String(vevent.summary) : ''
+      if (summary.startsWith('Following:')) continue
 
-      // Skip all-day events spanning multiple days (e.g. PTO blocks)
-      const durationMs = evEnd.getTime() - evStart.getTime()
-      const isDayOrLonger = durationMs >= 24 * 60 * 60 * 1000
-      const isAllDay = !vevent.start.toString().includes('T')
-      if (isDayOrLonger && isAllDay) continue
+      // Skip other people's OOO/PTO events (starts with someone else's name or known patterns)
+      const othersPatterns = [/^CJ /i, /^Jorge /i, /^Swetha /i, /^Aaron /i, /^Sergei /i]
+      if (othersPatterns.some(p => p.test(summary))) continue
+
+      // Skip informational all-day events (birthdays, anniversaries, payday, etc.)
+      const infoPatterns = [/birthday/i, /anniversary/i, /^payday$/i, /^save the date/i]
+      if (infoPatterns.some(p => p.test(summary))) continue
 
       // Include event if it overlaps with our range
       if (evStart < end && evEnd > start) {
